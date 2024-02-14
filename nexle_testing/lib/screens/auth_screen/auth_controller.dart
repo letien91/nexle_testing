@@ -1,12 +1,163 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nexle_testing/constants/password_status.dart';
+import 'package:nexle_testing/constants/strings.dart';
+import 'package:nexle_testing/models/request/login_request.dart';
+import 'package:nexle_testing/models/request/register_request.dart';
+import 'package:nexle_testing/models/response/login_response.dart';
+import 'package:nexle_testing/models/response/register_response.dart';
 import 'package:nexle_testing/services/api/api_respository.dart';
+import 'package:nexle_testing/utils/validator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class AuthController extends GetxController {
+class AuthController extends GetxController
+    with GetSingleTickerProviderStateMixin {
   AuthController({required this.apiRepository});
 
   final ApiRepository apiRepository;
 
+  final Validator _validator = Validator();
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  final FocusNode emailForcusNode = FocusNode();
+  final FocusNode passwordForcusNode = FocusNode();
+
+  Rx<String?> emailValidate = (null as String?).obs;
+  Rx<String?> passwordValidate = (null as String?).obs;
+
+  Rx<PasswordStatus> passwordStatus = PasswordStatus.none.obs;
+  Rx<bool> passwordFocus = false.obs;
+  Rx<bool> passwordStart = false.obs;
+  late AnimationController passwordStrengthController;
+
+  Rx<bool> isCheckedTAS = false.obs;
+  Rx<bool> isGoodForm = false.obs;
+
+  @override
+  void onInit() {
+    passwordStrengthController = AnimationController(
+      vsync: this,
+      duration: const Duration(
+        milliseconds: 250,
+      ),
+    );
+    super.onInit();
+  }
+
+  @override
+  void onClose() {
+    passwordStrengthController.dispose();
+    super.onClose();
+  }
+
+  void onChangedEmail(String email) {
+    emailValidate.value =
+        email.isEmpty ? null : _validator.validateEmail(email);
+    _checkGoodForm();
+  }
+
+  void onChangedPassword(String? password) {
+    _checkGoodForm();
+    if (password == null || password.isEmpty) {
+      passwordStatus.value = PasswordStatus.none;
+      passwordStrengthController.value = passwordStatus.value.strongLevel;
+      return;
+    }
+    if (password.length < 6) {
+      passwordStatus.value = PasswordStatus.tooShort;
+      passwordStrengthController.value = passwordStatus.value.strongLevel;
+      return;
+    }
+    if (password.length > 18) {
+      passwordStatus.value = PasswordStatus.tooLong;
+      passwordStrengthController.value = passwordStatus.value.strongLevel;
+      return;
+    }
+
+    final PasswordStatus ps = _validator.passwordStatus(password);
+    passwordStatus.value = ps;
+    passwordStrengthController.value = passwordStatus.value.strongLevel;
+    passwordStrengthController.forward();
+  }
+
+  void _checkGoodForm() {
+    final bool isEnteredEmail = emailController.text.isNotEmpty;
+    final bool isGoodPassword =
+        _validator.validatePassword(passwordController.text) == null;
+    isGoodForm.value = isEnteredEmail && isGoodPassword;
+  }
+
+  void startPassword(bool isFocus) {
+    passwordStart.value =
+        (isFocus == true || passwordController.text.isNotEmpty);
+  }
+
+  void onCheckTaS() {
+    isCheckedTAS.value = !isCheckedTAS.value;
+  }
+
+  Future<void> onSubmitted() async {
+    if (!isGoodForm.value) {
+      return;
+    }
+    emailValidate.value = _validator.validateEmail(emailController.text);
+    passwordValidate.value =
+        _validator.validatePassword(passwordController.text);
+
+    final bool isGoodValidate =
+        emailValidate.value == null || passwordValidate.value == null;
+    if (!isGoodValidate) {
+      return;
+    }
+
+    final bool registerSuccess = await _resiger();
+    if (!registerSuccess) {
+      return;
+    }
+
+    final bool loginSuccess = await _login();
+    if (!loginSuccess) {
+      return;
+    }
+
+    //TODO: go to categories screen
+  }
+
+  Future<bool> _resiger() async {
+    final String email = emailController.text;
+    final String password = passwordController.text;
+
+    final RegisterRequest registerRequest = RegisterRequest(
+      email: email,
+      password: password,
+      firstName: 'Tester',
+      lastName: 'Mr',
+    );
+    final Response<dynamic> registerRes =
+        await apiRepository.singup(registerRequest);
+    if (registerRes.statusCode == 201) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> _login() async {
+    final String email = emailController.text;
+    final String password = passwordController.text;
+
+    final LoginRequest loginRequest = LoginRequest(
+      email: email,
+      password: password,
+    );
+    final Response<dynamic> loginRes = await apiRepository.singin(loginRequest);
+    if (loginRes.statusCode == 201) {
+      final LoginResponse loginresponse = LoginResponse.fromMap(loginRes.body);
+      final SharedPreferences sharedPreferences = Get.find<SharedPreferences>();
+      sharedPreferences.setString(kAuthorizationKey, loginresponse.accessToken);
+      return true;
+    }
+    return false;
+  }
 }

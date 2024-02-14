@@ -1,25 +1,25 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:get/get_connect/http/src/response/response.dart';
 
 FutureOr<dynamic> responseInterceptor(
     Request<dynamic> request, Response<dynamic> response) async {
-  responseLogger(response);
-  if (response.statusCode != 200) {
+  if (response.statusCode != 201) {
     handleErrorStatus(response);
-    return;
   }
 
   return response;
 }
 
 void handleErrorStatus(Response<dynamic> response) {
-  return;
-}
-
-void responseLogger(Response<dynamic> response) {
-  debugPrint('Status Code: ${response.statusCode}\n');
-  debugPrint('Data: ${response.bodyString?.toString() ?? ''}');
+  Get.showSnackbar(GetSnackBar(
+    title: 'Error ${response.statusCode}',
+    message: response.bodyString?.toString() ?? '',
+    snackPosition: SnackPosition.TOP,
+    duration: const Duration(seconds: 3),
+    animationDuration: const Duration(milliseconds: 200),
+  ));
 }
