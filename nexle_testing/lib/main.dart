@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/route_manager.dart';
 import 'package:nexle_testing/main_binding.dart';
 import 'package:nexle_testing/routes/routes.dart';
@@ -15,6 +16,7 @@ void main() async {
     DeviceOrientation.portraitUp,
   ]);
   runApp(const MyApp());
+  configLoading();
 }
 
 class MyApp extends StatelessWidget {
@@ -35,9 +37,20 @@ class MyApp extends StatelessWidget {
       locale: TranslationService.locale,
       fallbackLocale: TranslationService.fallbackLocale,
       translations: TranslationService(),
-      builder: (BuildContext context, Widget? child) {
-        return child!;
-      },
+      builder: EasyLoading.init(),
     );
   }
+}
+
+void configLoading() {
+  EasyLoading.instance
+    ..indicatorType = EasyLoadingIndicatorType.ring
+    ..loadingStyle = EasyLoadingStyle.light
+    ..radius = 10.0
+    ..backgroundColor = Colors.transparent
+    ..indicatorColor = Colors.white
+    ..textColor = Colors.black
+    ..userInteractions = false
+    ..dismissOnTap = false
+    ..animationStyle = EasyLoadingAnimationStyle.scale;
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:nexle_testing/constants/password_status.dart';
 import 'package:nexle_testing/constants/strings.dart';
@@ -6,14 +7,12 @@ import 'package:nexle_testing/models/request/login_request.dart';
 import 'package:nexle_testing/models/request/register_request.dart';
 import 'package:nexle_testing/models/response/login_response.dart';
 import 'package:nexle_testing/routes/routes_name.dart';
-import 'package:nexle_testing/screens/categories_screen/categories_screen.dart';
 import 'package:nexle_testing/services/api/api_respository.dart';
 import 'package:nexle_testing/services/app_services/session_service.dart';
 import 'package:nexle_testing/utils/validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AuthController extends GetxController
-    with GetSingleTickerProviderStateMixin {
+class AuthController extends GetxController {
   AuthController();
 
   final ApiRepository apiRepository = Get.find<ApiRepository>();
@@ -32,27 +31,9 @@ class AuthController extends GetxController
   Rx<PasswordStatus> passwordStatus = PasswordStatus.none.obs;
   Rx<bool> passwordFocus = false.obs;
   Rx<bool> passwordStart = false.obs;
-  late AnimationController passwordStrengthController;
 
   Rx<bool> isCheckedTAS = false.obs;
   Rx<bool> isGoodForm = false.obs;
-
-  @override
-  void onInit() {
-    passwordStrengthController = AnimationController(
-      vsync: this,
-      duration: const Duration(
-        milliseconds: 250,
-      ),
-    );
-    super.onInit();
-  }
-
-  @override
-  void onClose() {
-    passwordStrengthController.dispose();
-    super.onClose();
-  }
 
   void onChangedEmail(String email) {
     emailValidate.value =
@@ -64,24 +45,19 @@ class AuthController extends GetxController
     _checkGoodForm();
     if (password == null || password.isEmpty) {
       passwordStatus.value = PasswordStatus.none;
-      passwordStrengthController.value = passwordStatus.value.strongLevel;
       return;
     }
     if (password.length < 6) {
       passwordStatus.value = PasswordStatus.tooShort;
-      passwordStrengthController.value = passwordStatus.value.strongLevel;
       return;
     }
     if (password.length > 18) {
       passwordStatus.value = PasswordStatus.tooLong;
-      passwordStrengthController.value = passwordStatus.value.strongLevel;
       return;
     }
 
     final PasswordStatus ps = _validator.passwordStatus(password);
     passwordStatus.value = ps;
-    passwordStrengthController.value = passwordStatus.value.strongLevel;
-    passwordStrengthController.forward();
   }
 
   void _checkGoodForm() {
@@ -115,6 +91,8 @@ class AuthController extends GetxController
       return;
     }
 
+    EasyLoading.show();
+
     final bool registerSuccess = await _resiger();
     if (!registerSuccess) {
       return;
@@ -124,6 +102,8 @@ class AuthController extends GetxController
     if (!loginSuccess) {
       return;
     }
+
+    EasyLoading.dismiss();
 
     Get.toNamed(RoutesName.categories);
   }

@@ -44,18 +44,6 @@ class AuthPasswordTextField extends GetView<AuthController> {
   }
 
   Widget _buildPasswordStatusIndicator() {
-    // return AnimatedBuilder(
-    //     animation: controller.passwordStrengthController,
-    //     builder: (context, Widget? child) {
-    //       print('xxxx: ${controller.passwordStrengthController.value}');
-    //       return AuthLine(
-    //         // value: controller.passwordStatus.value.strongLevel,
-    //         value: controller.passwordStrengthController.value,
-    //         backgroundColor: AppColor.fromHex('ffffff').withOpacity(0.42),
-    //         color: controller.passwordStatus.value.color,
-    //       );
-    //     });
-
     return Obx(
       () => controller.passwordStart.value
           ? AuthLine(
