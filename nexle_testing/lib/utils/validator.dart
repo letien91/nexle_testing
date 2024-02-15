@@ -31,40 +31,22 @@ class Validator {
       return PasswordStatus.none;
     }
 
-    const String weakAlphaUpper = r'^[A-Z]+$';
-    if (_checkPattern(pattern: weakAlphaUpper, password: password)) {
-      return PasswordStatus.weak;
+    const String strongPattern =
+        r'^(?=.*[a-z]{1,})(?=.*[A-Z]{1,})(?=.*?[\d]{1,})(?=.*?[\W]{1,}).*$';
+
+    if (_checkPattern(pattern: strongPattern, password: password)) {
+      return PasswordStatus.strong;
     }
 
-    const String weakAlphaLower = r'^[a-z]+$';
-    if (_checkPattern(pattern: weakAlphaLower, password: password)) {
-      return PasswordStatus.weak;
-    }
-
-    const String weakNumber = r'^[0-9]+$';
-    if (_checkPattern(pattern: weakNumber, password: password)) {
-      return PasswordStatus.weak;
-    }
-
-    const String fairPattern = r'^[a-zA-Z]+$';
-    if (_checkPattern(pattern: fairPattern, password: password)) {
-      return PasswordStatus.fair;
-    }
-
-    const String goodPattern = r'^[a-zA-Z0-9]+$';
+    const String goodPattern =
+        r'^(?=.*[a-z]{1,})(?=.*[A-Z]{1,})(?=.*?[\d]{1,}).*$';
     if (_checkPattern(pattern: goodPattern, password: password)) {
       return PasswordStatus.good;
     }
 
-    // const String strongPattern = r'[\^$*.\[\]{}()?\-"!@#%&/\,><:;_~`+='
-    //     "'"
-    //     ']';
-    const String strongPattern =
-        r'^(?=.*[0-9])(?=.*[a-zA-Z])[a-zA-Z0-9!@#$%\^&*()-_+=\[\]{}\\|;:\",<.>/?`~'
-        "'"
-        ']';
-    if (_checkPattern(pattern: strongPattern, password: password)) {
-      return PasswordStatus.strong;
+    const String fairPattern = r'^(?=.*[a-z]{1,})(?=.*[A-Z]{1,}).*$';
+    if (_checkPattern(pattern: fairPattern, password: password)) {
+      return PasswordStatus.fair;
     }
 
     return PasswordStatus.weak;
