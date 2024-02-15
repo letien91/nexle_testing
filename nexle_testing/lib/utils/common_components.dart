@@ -20,6 +20,7 @@ class CommonComp {
     double? leadingWidth,
     bool isCenterTitle = true,
     bool excludeHeaderSemantics = false,
+    FlexibleSpaceBar? flexibleSpace,
   }) {
     late Widget _leading = Container();
     if (leading != null) {
@@ -44,6 +45,7 @@ class CommonComp {
         title,
         style: themeData().copyWith().appBarTheme.titleTextStyle,
       ),
+      flexibleSpace: flexibleSpace,
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/route_manager.dart';
 import 'package:nexle_testing/main_binding.dart';
 import 'package:nexle_testing/routes/routes.dart';
@@ -10,6 +11,9 @@ import 'di.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DependenceInjection().init();
+  await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
+    DeviceOrientation.portraitUp,
+  ]);
   runApp(const MyApp());
 }
 

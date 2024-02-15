@@ -8,7 +8,7 @@ ThemeData themeData() {
     fontFamily: kFontName,
     visualDensity: VisualDensity.adaptivePlatformDensity,
     brightness: Brightness.light,
-    scaffoldBackgroundColor: Colors.transparent,
+    scaffoldBackgroundColor: Colors.black,
     unselectedWidgetColor: Colors.transparent,
     appBarTheme: const AppBarTheme(
       color: Colors.transparent,
