@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nexle_testing/constants/loading_state.dart';
 import 'package:nexle_testing/constants/strings.dart';
 import 'package:nexle_testing/models/category.dart';
 import 'package:nexle_testing/routes/routes_name.dart';
@@ -18,12 +19,15 @@ class CategoriesController extends GetxController {
 
   final double headerHeight = getProportionateScreenHeight(275);
 
+  Rx<LoadingState> loadingState = LoadingState.none.obs;
+
   @override
   void onInit() {
     super.onInit();
+    loadingState.value = LoadingState.success;
+
     scrollController.addListener(() {
       final double pixels = scrollController.position.pixels;
-
       canImageAppBar.value =
           (pixels + kToolbarHeight + SizeConfig.statusBarHeight >
               getProportionateScreenHeight(275));
@@ -50,12 +54,15 @@ class CategoriesController extends GetxController {
   }
 
   Future<void> _getCategories() async {
+    loadingState.value = LoadingState.loading;
     final Response<dynamic> response = await _apiRepository.getCategories();
 
     final dynamic body = response.body;
     if (body is! List<dynamic>) {
+      loadingState.value = LoadingState.failure;
       return;
     }
+    loadingState.value = LoadingState.success;
     final List<TCategory> list = body
         .map((dynamic e) => TCategory.fromMap(e as Map<String, dynamic>))
         .toList();

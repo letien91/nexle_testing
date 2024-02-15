@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nexle_testing/constants/colors.dart';
+import 'package:nexle_testing/constants/loading_state.dart';
 import 'package:nexle_testing/models/category.dart';
 import 'package:nexle_testing/screens/categories_screen/categories_controller.dart';
 import 'package:nexle_testing/screens/categories_screen/components/categories_appbar.dart';
@@ -35,7 +36,7 @@ class CategoriesScreen extends GetView<CategoriesController> {
               controller: controller.scrollController,
               slivers: <Widget>[
                 _buildHeader(),
-                _buildCategories(),
+                _buildLoadingListState(),
               ],
             ),
           ),
@@ -74,6 +75,54 @@ class CategoriesScreen extends GetView<CategoriesController> {
         expandedHeight: getProportionateScreenHeight(275),
       ),
       pinned: true,
+    );
+  }
+
+  Widget _buildLoadingListState() {
+    switch (controller.loadingState.value) {
+      case LoadingState.loading:
+        return _buildLoadingList();
+      case LoadingState.success:
+        if (controller.categories.value.isEmpty) {
+          return _buildFailureList(
+            message: 'No data',
+          );
+        }
+        return _buildCategories();
+      default:
+        return _buildFailureList();
+    }
+  }
+
+  Widget _buildLoadingList() {
+    return SliverFillRemaining(
+      child: Center(
+        child: SizedBox(
+          width: 26,
+          height: 26,
+          child: CircularProgressIndicator(
+            backgroundColor: Colors.white.withOpacity(0.5),
+            strokeWidth: 2,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFailureList({
+    String message =
+        'Something went wrong.\n Please pull to refresh to get data',
+  }) {
+    return SliverFillRemaining(
+      child: Center(
+        child: CommonComp.setRegularText(
+          txt: message,
+          maxLine: 3,
+          color: Colors.white,
+          textAlign: TextAlign.center,
+        ),
+      ),
     );
   }
 
