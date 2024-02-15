@@ -22,8 +22,10 @@ class InputField extends StatefulWidget {
     ),
     this.isPassword = false,
     this.scrollPadding = const EdgeInsets.all(20),
+    this.textInputAction,
     this.onFocusChange,
     this.onChanged,
+    this.onSubmitted,
   });
 
   final TextEditingController controller;
@@ -34,9 +36,11 @@ class InputField extends StatefulWidget {
   final TextStyle style;
   final bool isPassword;
   final EdgeInsets scrollPadding;
+  final TextInputAction? textInputAction;
 
   final void Function(bool)? onFocusChange;
   final void Function(String)? onChanged;
+  final void Function(String)? onSubmitted;
 
   @override
   State<InputField> createState() => _InputFieldState();
@@ -86,10 +90,12 @@ class _InputFieldState extends State<InputField> {
         style: widget.style,
         cursorColor: Colors.white,
         keyboardType: widget.keyboardType,
+        textInputAction: widget.textInputAction,
         obscureText: !isShow,
         obscuringCharacter: '*',
         autocorrect: false,
         onChanged: widget.onChanged,
+        onSubmitted: widget.onSubmitted,
       ),
     );
   }

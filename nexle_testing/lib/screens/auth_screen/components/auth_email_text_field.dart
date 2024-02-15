@@ -18,9 +18,13 @@ class AuthEmailTextField extends GetView<AuthController> {
           controller: controller.emailController,
           focusNode: controller.emailForcusNode,
           keyboardType: TextInputType.emailAddress,
+          textInputAction: TextInputAction.next,
           labelText: 'Your email',
           onChanged: (String value) {
             controller.onChangedEmail(value);
+          },
+          onSubmitted: (String value) {
+            FocusScope.of(context).requestFocus(controller.passwordForcusNode);
           },
         ),
         const AuthLine(),

@@ -192,4 +192,8 @@ class CommonComp {
       overflow: overflow,
     );
   }
+
+  static void hideKeyboard(BuildContext context) {
+    FocusScope.of(context).unfocus();
+  }
 }

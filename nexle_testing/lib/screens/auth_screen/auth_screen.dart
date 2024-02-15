@@ -23,7 +23,7 @@ class AuthScreen extends GetView<AuthController> {
         onWillPop: () async => false,
         child: GestureDetector(
           onTap: () {
-            //TODO: hạ bàn phím
+            CommonComp.hideKeyboard(context);
           },
           child: Scaffold(
             backgroundColor: Colors.black,

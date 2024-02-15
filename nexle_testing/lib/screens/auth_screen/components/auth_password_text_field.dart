@@ -34,6 +34,7 @@ class AuthPasswordTextField extends GetView<AuthController> {
       labelText: 'Your password',
       isPassword: true,
       scrollPadding: EdgeInsets.only(bottom: getProportionateScreenHeight(60)),
+      textInputAction: TextInputAction.done,
       onChanged: (String value) {
         controller.onChangedPassword(value);
       },
