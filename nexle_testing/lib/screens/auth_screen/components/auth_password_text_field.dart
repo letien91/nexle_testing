@@ -57,8 +57,7 @@ class AuthPasswordTextField extends GetView<AuthController> {
     return Obx(
       () => controller.passwordStart.value
           ? AuthLine(
-              // value: controller.passwordStatus.value.strongLevel,
-              value: controller.passwordStrengthController.value,
+              value: controller.passwordStatus.value.strongLevel,
               backgroundColor: AppColor.fromHex('ffffff').withOpacity(0.42),
               color: controller.passwordStatus.value.color,
             )

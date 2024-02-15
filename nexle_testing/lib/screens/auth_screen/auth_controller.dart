@@ -5,16 +5,16 @@ import 'package:nexle_testing/constants/strings.dart';
 import 'package:nexle_testing/models/request/login_request.dart';
 import 'package:nexle_testing/models/request/register_request.dart';
 import 'package:nexle_testing/models/response/login_response.dart';
-import 'package:nexle_testing/models/response/register_response.dart';
+import 'package:nexle_testing/screens/categories_screen/categories_screen.dart';
 import 'package:nexle_testing/services/api/api_respository.dart';
 import 'package:nexle_testing/utils/validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  AuthController({required this.apiRepository});
+  AuthController();
 
-  final ApiRepository apiRepository;
+  final ApiRepository apiRepository = Get.find<ApiRepository>();
 
   final Validator _validator = Validator();
 
@@ -122,7 +122,7 @@ class AuthController extends GetxController
       return;
     }
 
-    //TODO: go to categories screen
+    Get.to(() => const CategoriesScreen());
   }
 
   Future<bool> _resiger() async {
@@ -140,6 +140,13 @@ class AuthController extends GetxController
     if (registerRes.statusCode == 201) {
       return true;
     }
+    Get.showSnackbar(GetSnackBar(
+      title: 'Error ${registerRes.statusCode}',
+      message: registerRes.bodyString?.toString() ?? '',
+      snackPosition: SnackPosition.TOP,
+      duration: const Duration(seconds: 3),
+      animationDuration: const Duration(milliseconds: 200),
+    ));
     return false;
   }
 
@@ -152,12 +159,20 @@ class AuthController extends GetxController
       password: password,
     );
     final Response<dynamic> loginRes = await apiRepository.singin(loginRequest);
-    if (loginRes.statusCode == 201) {
+    if (loginRes.statusCode == 200) {
       final LoginResponse loginresponse = LoginResponse.fromMap(loginRes.body);
+      print('TOKEN: ${loginresponse.accessToken}');
       final SharedPreferences sharedPreferences = Get.find<SharedPreferences>();
       sharedPreferences.setString(kAuthorizationKey, loginresponse.accessToken);
       return true;
     }
+    Get.showSnackbar(GetSnackBar(
+      title: 'Error ${loginRes.statusCode}',
+      message: loginRes.bodyString?.toString() ?? '',
+      snackPosition: SnackPosition.TOP,
+      duration: const Duration(seconds: 3),
+      animationDuration: const Duration(milliseconds: 200),
+    ));
     return false;
   }
 }
