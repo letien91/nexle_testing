@@ -20,4 +20,10 @@ class ApiRepository extends ApiConnect {
 
     return response;
   }
+
+  Future<dynamic> getCategories() async {
+    final Response<dynamic> response = await get(_apiEndPoints.getCategories);
+
+    return response;
+  }
 }

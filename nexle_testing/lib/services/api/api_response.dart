@@ -1,13 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
-import 'package:get/get_connect/http/src/response/response.dart';
 
 FutureOr<dynamic> responseInterceptor(
     Request<dynamic> request, Response<dynamic> response) async {
-  if (response.statusCode != 201) {
+  //?
+  if (response.statusCode != 200 && response.statusCode != 201) {
     handleErrorStatus(response);
   }
 

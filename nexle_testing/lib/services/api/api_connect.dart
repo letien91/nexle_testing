@@ -14,17 +14,16 @@ class ApiConnect extends GetConnect {
       final SharedPreferences storage = Get.find<SharedPreferences>();
       final String? token = storage.getString(kAuthorizationKey);
       if (token != null) {
-        request.headers['Authorization'] = token;
+        request.headers['Authorization'] = 'Bearer $token';
       }
 
       return request;
     });
 
     httpClient.addRequestModifier((Request<dynamic> request) {
-      request.headers['Content-Type'] = 'application/json';
       return request;
     });
 
-    httpClient.addResponseModifier(responseInterceptor);
+    // httpClient.addResponseModifier(responseInterceptor);
   }
 }
