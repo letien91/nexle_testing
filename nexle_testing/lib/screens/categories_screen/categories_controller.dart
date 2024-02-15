@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nexle_testing/constants/strings.dart';
 import 'package:nexle_testing/models/category.dart';
+import 'package:nexle_testing/routes/routes_name.dart';
 import 'package:nexle_testing/services/api/api_respository.dart';
 import 'package:nexle_testing/services/size_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -74,7 +75,7 @@ class CategoriesController extends GetxController {
     categories.refresh();
   }
 
-  Future<void> saveCategoriesInLocal() async {
+  Future<void> saveCategoriesInLocalAndGotoHome() async {
     final List<TCategory> list =
         categories.value.where((TCategory e) => e.isSelected).toList();
     final List<Map<String, dynamic>> listMap =
@@ -85,5 +86,7 @@ class CategoriesController extends GetxController {
     final String encode = jsonEncode(listMap);
     final SharedPreferences preferences = Get.find<SharedPreferences>();
     await preferences.setString(kUserCategoriesKey, encode);
+
+    Get.offNamed(RoutesName.home);
   }
 }

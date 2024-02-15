@@ -51,8 +51,7 @@ class CategoriesScreen extends GetView<CategoriesController> {
     return GestureDetector(
       onTap: () async {
         if (selected) {
-          await controller.saveCategoriesInLocal();
-          // Get.off(page);
+          await controller.saveCategoriesInLocalAndGotoHome();
         }
       },
       child: Container(
