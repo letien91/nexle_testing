@@ -6,6 +6,7 @@ import 'package:nexle_testing/constants/password_status.dart';
 import 'package:nexle_testing/screens/auth_screen/auth_controller.dart';
 import 'package:nexle_testing/screens/auth_screen/components/auth_line.dart';
 import 'package:nexle_testing/screens/auth_screen/components/auth_validate_label.dart';
+import 'package:nexle_testing/services/size_config.dart';
 import 'package:nexle_testing/utils/common_components.dart';
 
 class AuthPasswordTextField extends GetView<AuthController> {
@@ -32,10 +33,11 @@ class AuthPasswordTextField extends GetView<AuthController> {
       keyboardType: TextInputType.text,
       labelText: 'Your password',
       isPassword: true,
+      scrollPadding: EdgeInsets.only(bottom: getProportionateScreenHeight(60)),
       onChanged: (String value) {
         controller.onChangedPassword(value);
       },
-      onFocusChange: (bool isFocus) {
+      onFocusChange: (bool isFocus) async {
         controller.startPassword(isFocus);
       },
     );

@@ -21,6 +21,7 @@ class InputField extends StatefulWidget {
       fontWeight: FontWeight.normal,
     ),
     this.isPassword = false,
+    this.scrollPadding = const EdgeInsets.all(20),
     this.onFocusChange,
     this.onChanged,
   });
@@ -32,6 +33,7 @@ class InputField extends StatefulWidget {
   final TextStyle labelStyle;
   final TextStyle style;
   final bool isPassword;
+  final EdgeInsets scrollPadding;
 
   final void Function(bool)? onFocusChange;
   final void Function(String)? onChanged;
@@ -50,12 +52,15 @@ class _InputFieldState extends State<InputField> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 56,
-      child: widget.isPassword
-          ? _buildListenablePassword()
-          : _buildTextField(true),
-    );
+    // return SizedBox(
+    //   height: 56,
+    //   child: widget.isPassword
+    //       ? _buildListenablePassword()
+    //       : _buildTextField(true),
+    // );
+    return widget.isPassword
+        ? _buildListenablePassword()
+        : _buildTextField(true);
   }
 
   Widget _buildTextField(bool isShow) {
@@ -64,6 +69,7 @@ class _InputFieldState extends State<InputField> {
         widget.onFocusChange?.call(isFocus);
       },
       child: TextField(
+        scrollPadding: widget.scrollPadding,
         controller: widget.controller,
         focusNode: widget.focusNode,
         decoration: InputDecoration(
