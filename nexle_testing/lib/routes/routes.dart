@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:nexle_testing/routes/routes_name.dart';
 import 'package:nexle_testing/screens/auth_screen/auth_binding.dart';
 import 'package:nexle_testing/screens/auth_screen/auth_screen.dart';
+import 'package:nexle_testing/screens/categories_screen/categories_binding.dart';
+import 'package:nexle_testing/screens/categories_screen/categories_screen.dart';
 import 'package:nexle_testing/screens/splash_screen/splash_binding.dart';
 import 'package:nexle_testing/screens/splash_screen/splash_screen.dart';
 
@@ -23,10 +25,10 @@ class Routes {
     //   page: () => const SplashScreen(),
     //   binding: SplashBinding(),
     // ),
-    // GetPage<dynamic>(
-    //   name: RoutesName.categories,
-    //   page: () => const SplashScreen(),
-    //   binding: SplashBinding(),
-    // ),
+    GetPage<dynamic>(
+      name: RoutesName.categories,
+      page: () => const CategoriesScreen(),
+      binding: CategoriesBinding(),
+    ),
   ];
 }
