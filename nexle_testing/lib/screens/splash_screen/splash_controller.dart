@@ -10,6 +10,6 @@ class SplashController extends GetxController {
 
     final SharedPreferences preferences = Get.find<SharedPreferences>();
     final String? token = preferences.getString(kAuthorizationKey);
-    Get.toNamed(token != null ? RoutesName.home : RoutesName.auth);
+    Get.offAllNamed(token != null ? RoutesName.home : RoutesName.auth);
   }
 }

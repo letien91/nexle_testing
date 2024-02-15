@@ -7,6 +7,7 @@ import 'package:nexle_testing/models/request/register_request.dart';
 import 'package:nexle_testing/models/response/login_response.dart';
 import 'package:nexle_testing/screens/categories_screen/categories_screen.dart';
 import 'package:nexle_testing/services/api/api_respository.dart';
+import 'package:nexle_testing/services/app_services/session_service.dart';
 import 'package:nexle_testing/utils/validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -161,7 +162,11 @@ class AuthController extends GetxController
     final Response<dynamic> loginRes = await apiRepository.singin(loginRequest);
     if (loginRes.statusCode == 200) {
       final LoginResponse loginresponse = LoginResponse.fromMap(loginRes.body);
-      print('TOKEN: ${loginresponse.accessToken}');
+      final SessionService sessionService = Get.find<SessionService>();
+      sessionService.setUser(loginresponse.user);
+      sessionService.accessToken = loginresponse.accessToken;
+      sessionService.refreshToken = loginresponse.refreshToken;
+
       final SharedPreferences sharedPreferences = Get.find<SharedPreferences>();
       sharedPreferences.setString(kAuthorizationKey, loginresponse.accessToken);
       return true;
