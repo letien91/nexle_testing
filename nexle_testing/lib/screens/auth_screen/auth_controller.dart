@@ -5,6 +5,7 @@ import 'package:nexle_testing/constants/strings.dart';
 import 'package:nexle_testing/models/request/login_request.dart';
 import 'package:nexle_testing/models/request/register_request.dart';
 import 'package:nexle_testing/models/response/login_response.dart';
+import 'package:nexle_testing/routes/routes_name.dart';
 import 'package:nexle_testing/screens/categories_screen/categories_screen.dart';
 import 'package:nexle_testing/services/api/api_respository.dart';
 import 'package:nexle_testing/services/app_services/session_service.dart';
@@ -84,7 +85,8 @@ class AuthController extends GetxController
   }
 
   void _checkGoodForm() {
-    final bool isEnteredEmail = emailController.text.isNotEmpty;
+    final bool isEnteredEmail =
+        _validator.validateEmail(emailController.text) == null;
     final bool isGoodPassword =
         _validator.validatePassword(passwordController.text) == null;
     isGoodForm.value = isEnteredEmail && isGoodPassword;
@@ -123,7 +125,7 @@ class AuthController extends GetxController
       return;
     }
 
-    Get.to(() => const CategoriesScreen());
+    Get.toNamed(RoutesName.categories);
   }
 
   Future<bool> _resiger() async {
