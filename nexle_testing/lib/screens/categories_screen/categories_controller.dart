@@ -6,6 +6,7 @@ import 'package:nexle_testing/constants/loading_state.dart';
 import 'package:nexle_testing/constants/strings.dart';
 import 'package:nexle_testing/models/category.dart';
 import 'package:nexle_testing/routes/routes_name.dart';
+import 'package:nexle_testing/screens/auth_screen/auth_controller.dart';
 import 'package:nexle_testing/services/api/api_respository.dart';
 import 'package:nexle_testing/services/size_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -93,6 +94,8 @@ class CategoriesController extends GetxController {
     final String encode = jsonEncode(listMap);
     final SharedPreferences preferences = Get.find<SharedPreferences>();
     await preferences.setString(kUserCategoriesKey, encode);
+
+    Get.delete<AuthController>();
 
     Get.offNamed(RoutesName.home);
   }
