@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -95,16 +97,17 @@ class AuthController extends GetxController {
 
     final bool registerSuccess = await _resiger();
     if (!registerSuccess) {
+      EasyLoading.dismiss();
       return;
     }
 
     final bool loginSuccess = await _login();
     if (!loginSuccess) {
+      EasyLoading.dismiss();
       return;
     }
 
     EasyLoading.dismiss();
-
     Get.toNamed(RoutesName.categories);
   }
 
@@ -123,13 +126,7 @@ class AuthController extends GetxController {
     if (registerRes.statusCode == 201) {
       return true;
     }
-    Get.showSnackbar(GetSnackBar(
-      title: 'Error ${registerRes.statusCode}',
-      message: registerRes.bodyString?.toString() ?? '',
-      snackPosition: SnackPosition.TOP,
-      duration: const Duration(seconds: 3),
-      animationDuration: const Duration(milliseconds: 200),
-    ));
+    _showSnackbar(registerRes);
     return false;
   }
 
@@ -153,13 +150,26 @@ class AuthController extends GetxController {
       sharedPreferences.setString(kAuthorizationKey, loginresponse.accessToken);
       return true;
     }
+    _showSnackbar(loginRes);
+    return false;
+  }
+
+  void _showSnackbar(Response<dynamic> response) {
+    String message = 'Something went wrong';
+    if (response.bodyString != null) {
+      final Map<String, dynamic> errMap =
+          Map<String, dynamic>.from(jsonDecode(response.bodyString!));
+      message = errMap.containsKey('message')
+          ? errMap['message']
+          : 'Something went wrong';
+    }
+
     Get.showSnackbar(GetSnackBar(
-      title: 'Error ${loginRes.statusCode}',
-      message: loginRes.bodyString?.toString() ?? '',
+      title: 'Error ${response.statusCode}',
+      message: message,
       snackPosition: SnackPosition.TOP,
       duration: const Duration(seconds: 3),
       animationDuration: const Duration(milliseconds: 200),
     ));
-    return false;
   }
 }
